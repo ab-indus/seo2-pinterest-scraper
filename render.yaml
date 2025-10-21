@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: pinterest-scraper
+    env: node
+    buildCommand: |
+      npm install
+      npx playwright install --with-deps
+    startCommand: node index.js
+    plan: free
+    region: singapore
