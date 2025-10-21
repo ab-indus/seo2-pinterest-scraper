@@ -13,7 +13,10 @@ app.get("/scrape", async (req, res) => {
   }
 
   try {
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(boardUrl, { waitUntil: "networkidle" });
 
@@ -30,8 +33,8 @@ app.get("/scrape", async (req, res) => {
     // Extract pin links
     const pins = await page.evaluate(() => {
       const links = Array.from(document.querySelectorAll("a[href*='/pin/']"));
-      const unique = [...new Set(links.map(a => a.href.split("?")[0]))];
-      return unique.map(link => ({ link }));
+      const unique = [...new Set(links.map((a) => a.href.split("?")[0]))];
+      return unique.map((link) => ({ link }));
     });
 
     await browser.close();
